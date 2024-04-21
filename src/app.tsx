@@ -5,6 +5,7 @@ import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
 import { Link, history } from '@umijs/max';
 import {errorConfig} from "@/requestErrorConfig";
+import {RequestOptions} from "@@/plugin-request/request";
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -96,7 +97,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
             <SettingDrawer
               disableUrlParams
               enableDarkTheme
-              settings={initialState?.settings}
+              settings={initialState?.defaultSetting}
               onSettingChange={(settings) => {
                 setInitialState((preInitialState) => ({
                   ...preInitialState,
@@ -121,4 +122,12 @@ export const request = {
   baseURL: 'http://localhost:7529',
   withCredentials :true,
   ...errorConfig,
+  requestInterceptors: [
+    (config: RequestOptions) => {
+      // 拦截请求配置，进行个性化处理。
+      const url = config?.url?.concat('?token = 123');
+      return { ...config, url };
+      return config;
+    },
+  ],
 };
